@@ -5,7 +5,6 @@ import { save } from './store/crud'
 class App extends Component {
   componentDidMount() {
     console.log(this.props)
-
     this.props.save({ nome: 'Rafael' })
   }
   render() {
@@ -17,21 +16,22 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (store, { entity }) => ({
-  entity,
-  saveValue: store[entity].status.save
-});
-
-const mapDispatchToProps = (dispatch, { entity }) => {
+const mapStateToProps = (store, { entity }) => {
   return {
-    ...bindActionByEntity(dispatch, save, entity)
+    entity,
+    saveValue: store[entity].status.save
   }
 };
 
-const bindActionByEntity = (dispatch, action, entity) => {
+const mapDispatchToProps = (dispatch, { entity }) => {
+  const actionCreator = bindEntityActionCreator(entity, dispatch);
   return {
-    [action.name]: (args) => dispatch(action(args, entity))
+    save: actionCreator(save)
   }
+};
+
+const bindEntityActionCreator = (entity, dispatch) => (action, key = null) => {
+  return (...rest) => dispatch(action(...rest, entity))
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App);

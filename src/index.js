@@ -9,7 +9,7 @@ import { Store } from './store';
 ReactDOM.render(
   <Provider store={Store}>
     <Router>
-      <Route path="/" component={() => <App entity="workers" />} />
+      <Route path="/" component={() => <App entity="orders" />} />
     </Router>
   </Provider>,
   document.getElementById('root')
