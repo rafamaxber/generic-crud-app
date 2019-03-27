@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { save } from './store/crud'
 
 class App extends Component {
   componentDidMount() {
     console.log(this.props)
 
-    this.props.save({ nome: 'Rafael' }, 'orders')
+    this.props.save({ nome: 'Rafael' })
   }
   render() {
     return (
@@ -18,10 +17,21 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = store => ({
-  save: store.status
+const mapStateToProps = (store, { entity }) => ({
+  entity,
+  saveValue: store[entity].status.save
 });
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({ save }, dispatch);
+
+const mapDispatchToProps = (dispatch, { entity }) => {
+  return {
+    ...bindActionByEntity(dispatch, save, entity)
+  }
+};
+
+const bindActionByEntity = (dispatch, action, entity) => {
+  return {
+    [action.name]: (args) => dispatch(action(args, entity))
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
