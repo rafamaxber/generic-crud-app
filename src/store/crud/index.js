@@ -1,3 +1,5 @@
+// http://redux.ruanyifeng.com/recipes/reducers/ReusingReducerLogic.html
+
 const intialState = {
   status: {
     list: 'NOT_LOADED',
@@ -26,6 +28,16 @@ export const reducer = (state = intialState, action) => {
 
     default:
       return state;
+  }
+}
+
+export function createNamedWrapperReducer(reducerFunction, reducerName) {
+  return (state, action) => {
+      const {name} = action;
+      const isInitializationCall = state === undefined;
+      if(name !== reducerName && !isInitializationCall) return state;
+
+      return reducerFunction(state, action);
   }
 }
 
